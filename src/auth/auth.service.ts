@@ -8,26 +8,29 @@ export class AuthService {
     constructor(private jwtService: JwtService,
         private userService: UsersService) { }
 
-    private checkPassword(password: string, hashedPassword: string) {
-        // This function should compare the plain password with the hashed checkPassword
-        return bcrypt.compareSync(password, hashedPassword);
-    }
-
-    async validateUser(email: string, password: string) {
+    async validateUser(email: string, password: string): Promise<any> {
 
         const user = await this.userService.findOneByEmail(email);
-
+        console.log("User found: ", user);
         // check the password (encrypted with bcrypt)
-        if (user && this.checkPassword(password, user.password)) {
-            // Remove password from the user object before returning
-            const { password, ...result } = user;
-            return result;
+
+        if (!user) {
+            return null;
         }
 
-        return null;
+        const validationResult = await bcrypt.compare(password, user.password);
+        if (!validationResult) {
+            return null;
+        }
+
+        // Remove password from the user object before returning
+        console.log("User found and password matched");
+        const { password: pwd, ...result } = user;
+        return result;
     }
 
     async login(user: any) {
+        console.log("user: ", user);
         const payload = { email: user.email, sub: user.id };
 
         return {

@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { ProductsModule } from './products/products.module';
+import { Product } from './products/entities/product.entity';
 
 @Module({
     imports: [
@@ -16,7 +17,7 @@ import { ProductsModule } from './products/products.module';
             username: 'postgres',
             password: 'suser',
             database: 'apicurso',
-            entities: [User],
+            entities: [User, Product],
             synchronize: true,
         }),
         AuthModule,
