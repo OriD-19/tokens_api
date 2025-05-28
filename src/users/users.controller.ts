@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from "bcrypt";
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 @Controller('users')
 export class UsersController {
@@ -31,7 +32,10 @@ export class UsersController {
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
+    remove(@Param('id') id: string, @Body() req: any) {
+        if(req.user.id !== +id) {
+          throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);    
+        }
         return this.usersService.remove(+id);
     }
 }
