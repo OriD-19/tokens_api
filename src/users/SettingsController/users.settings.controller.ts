@@ -11,7 +11,7 @@ export class SettingsController
     {
         const user = req.user as any;
         return {
-            mensaje: `Bienvenido a tu configuracion, ${user.name}`,
+            mensaje: `Bienvenido a tu configuracion, ${user.nombre}`,
             email: user.email,
         }
     }
