@@ -17,7 +17,7 @@ import { SettingsModule } from './users/SettingModule/settings.module';
             password: 'Jrlazo23',
             database: 'apicurso',
             entities: [User],
-            synchronize: false,
+            synchronize: true,
         }),
         AuthModule,
         UsersModule,
