@@ -1,40 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'src/users/users.service';
-import * as bcrypt from "bcrypt";
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
-    constructor(private jwtService: JwtService,
-        private userService: UsersService) { }
+  constructor(private usersService: UsersService) {}
 
-    private checkPassword(password: string, hashedPassword: string) {
-        // This function should compare the plain password with the hashed checkPassword
-        return bcrypt.compareSync(password, hashedPassword);
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.usersService.findOneByEmail(email);
+    console.log('Datos recibidos:', { email, password });
+    console.log('Usuario encontrado:', user);
+
+    // ⚠️ Comparación sin bcrypt (solo para pruebas locales)
+    if (user && user.password === password) {
+      return user;
     }
 
-    async validateUser(email: string, password: string) {
+    return null;
+  }
 
-        const user = await this.userService.findOneByEmail(email);
-
-        // check the password (encrypted with bcrypt)
-        if (user && this.checkPassword(password, user.password)) {
-            // Remove password from the user object before returning
-            const { password, ...result } = user;
-            return result;
-        }
-
-        return null;
-    }
-
-    async login(user: any) {
-        console.log("Usuario recibido en login():", user);
-        const payload = { email: user.email, sub: user.id, nombre: user.nombre };
-
-
-        return {
-            access_token: this.jwtService.sign(payload),
-        }
-    }
+  async login(user: any) {
+    // tu lógica de generación de token aquí
+    return {
+      access_token: 'aqui_va_el_token', // reemplaza con tu lógica real
+      user,
+    };
+  }
 }
-

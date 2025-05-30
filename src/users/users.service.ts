@@ -1,40 +1,48 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
     ) { }
 
-    create(createUserDto: CreateUserDto) {
+    // ✅ Crear usuario
+    async create(createUserDto: CreateUserDto): Promise<User> {
         const user = this.usersRepository.create(createUserDto);
         return this.usersRepository.save(user);
     }
 
-    findAll() {
-        return `This action returns all users`;
+    // ✅ Obtener todos los usuarios
+    findAll(): Promise<User[]> {
+        return this.usersRepository.find();
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} user`;
+    // ✅ Obtener usuario por ID
+    findOne(id: number): Promise<User | null> {
+        return this.usersRepository.findOne({ where: { id } });
     }
 
-    findOneByEmail(email: string) {
+
+    // ✅ Obtener usuario por email (usado por AuthService)
+    async findOneByEmail(email: string): Promise<User | null> {
         return this.usersRepository.findOne({ where: { email } });
     }
 
-    update(id: number, updateUserDto: UpdateUserDto) {
-        return `This action updates a #${id} user`;
+
+    // ✅ Actualizar usuario
+    async update(id: number, updateUserDto: UpdateUserDto): Promise<User | null> {
+        await this.usersRepository.update(id, updateUserDto);
+        return this.findOne(id); // ahora devuelve User | null
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} user`;
+    // ✅ Eliminar usuario
+    async remove(id: number): Promise<void> {
+        await this.usersRepository.delete(id);
     }
 }
