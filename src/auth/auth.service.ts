@@ -14,7 +14,6 @@ export class AuthService {
     console.log('Datos recibidos:', { email, password });
     console.log('Usuario encontrado:', user);
 
-    // ⚠️ Comparación sin bcrypt (solo para pruebas locales)
     if (user && user.password === password) {
       return user;
     }
@@ -23,7 +22,6 @@ export class AuthService {
   }
 
   async login(user: any) {
-    // ✅ Incluir el nombre en el payload del token
     const payload = { email: user.email, sub: user.id, nombre: user.nombre };
 
     const { password, ...userWithoutPassword } = user;
