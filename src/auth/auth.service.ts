@@ -4,34 +4,33 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-    constructor(
-        private usersService: UsersService,
-        private jwtService: JwtService,
-    ) { }
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.usersService.findOneByEmail(email);
+    console.log('Datos recibidos:', { email, password });
+    console.log('Usuario encontrado:', user);
 
-    async validateUser(email: string, password: string): Promise<any> {
-        const user = await this.usersService.findOneByEmail(email);
-        console.log('Datos recibidos:', { email, password });
-        console.log('Usuario encontrado:', user);
-
-        // ⚠️ Comparación sin bcrypt (solo para pruebas locales)
-        if (user && user.password === password) {
-            return user;
-        }
-
-        return null;
+    // ⚠️ Comparación sin bcrypt (solo para pruebas locales)
+    if (user && user.password === password) {
+      return user;
     }
 
-    async login(user: any) {
-        const payload = { email: user.email, sub: user.id };
+    return null;
+  }
 
-        const { password, ...userWithoutPassword } = user;
+  async login(user: any) {
+    // ✅ Incluir el nombre en el payload del token
+    const payload = { email: user.email, sub: user.id, nombre: user.nombre };
 
-        return {
-            access_token: this.jwtService.sign(payload),
-            user: userWithoutPassword,
-        };
-    }
+    const { password, ...userWithoutPassword } = user;
 
+    return {
+      access_token: this.jwtService.sign(payload),
+      user: userWithoutPassword,
+    };
+  }
 }
