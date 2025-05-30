@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { SettingsModule } from './users/SettingModule/settings.module';
+import { TasksModule } from './tasks/tasks.module';
+import { Task } from './tasks/entities/task.entity';
 
 @Module({
     imports: [
@@ -16,12 +18,13 @@ import { SettingsModule } from './users/SettingModule/settings.module';
             username: 'postgres',
             password: 'Jrlazo23',
             database: 'apicurso',
-            entities: [User],
+            entities: [User, Task],
             synchronize: true,
         }),
         AuthModule,
         UsersModule,
         SettingsModule,
+        TasksModule,
     ],
     controllers: [AppController],
     providers: [AppService],
