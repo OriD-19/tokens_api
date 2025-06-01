@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, HttpException, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from "bcrypt";
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -11,7 +13,6 @@ export class UsersController {
 
     @Post()
     async create(@Body() createUserDto: CreateUserDto) {
-        // hash the password before saving to the database
         createUserDto.password = await bcrypt.hash(createUserDto.password, 12);
         return this.usersService.create(createUserDto);
     }
@@ -31,11 +32,14 @@ export class UsersController {
         return this.usersService.update(+id, updateUserDto);
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Delete(':id')
-    remove(@Param('id') id: string, @Body() req: any) {
-        if(req.user.id !== +id) {
-          throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);    
+    async remove(@Param('id') id: string, @Req() req: Request) {
+        const user = req.user as { userId: number; email: string };
+        const paramId = parseInt(id, 10);
+        if (user.userId !== paramId) {
+            throw new HttpException('FORBIDDEN', HttpStatus.FORBIDDEN);
         }
-        return this.usersService.remove(+id);
+        return this.usersService.remove(paramId);
     }
 }
