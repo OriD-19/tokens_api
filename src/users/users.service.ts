@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -36,7 +37,12 @@ export class UsersService {
         return this.findOne(id); 
     }
 
-    async remove(id: number): Promise<void> {
-        await this.usersRepository.delete(id);
+    async remove(id: number) {
+        try {
+            await this.usersRepository.delete(id);
+            return { message: `User with id ${id} deleted successfully` };
+        } catch (error) {
+            return { message: `Error deleting user with id ${id}: ${error}` };
+        }
     }
 }
