@@ -19,7 +19,7 @@ import { Task } from './tasks/entities/task.entity';
             host: 'localhost',
             port: 5432,
             username: 'postgres',
-            password: 'Jrlazo23',
+            password: 'suser',
             database: 'apicurso',
             entities: [User, Product, Task],
             synchronize: true,

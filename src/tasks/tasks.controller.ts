@@ -9,7 +9,7 @@ import { JwtAuthGuard } from 'src/auth/jwtAuth.guard';
 @Controller('tasks')
 export class TasksController {
     constructor(private readonly tasksService: TasksService) { }
-    
+
     @Post()
     @UseGuards(JwtAuthGuard)
     @ApiOperation({ summary: "Crear una nueva tarea" })
