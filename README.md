@@ -1,2 +1,2 @@
-# Ejercicio 2 (Avanzado)
-Rutas públicas y privadas dentro del mismo controlados (productos)
+# Ejercicio 3 (Avanzado)
+Validar que un usuario solo pueda borrar sus propios datos.
