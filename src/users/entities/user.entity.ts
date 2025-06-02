@@ -13,6 +13,8 @@ export class User {
     @Column()
     password: string;
 
+    @Column()
+    nombre: string;
     @OneToMany(() => Task, (task) => task.user)
     tasks: Task[];
 }
